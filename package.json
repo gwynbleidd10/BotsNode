@@ -1,0 +1,22 @@
+{
+  "name": "botsnode",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "nf start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gwynbleidd10/BotsNode.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gwynbleidd10/BotsNode/issues"
+  },
+  "homepage": "https://github.com/gwynbleidd10/BotsNode#readme",
+  "dependencies": {
+    "foreman": "3.0.1"
+  }
+}
