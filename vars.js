@@ -1,4 +1,5 @@
 const chat_apc='337277275';
+const chat_boards='-1001472272628';
 
 var service = false;
 
@@ -73,5 +74,6 @@ const users = {
     options: options,
     service: service,
     admins: admins,
-    chat_apc: chat_apc
+    chat_apc: chat_apc,
+    chat_boards: chat_boards
 }

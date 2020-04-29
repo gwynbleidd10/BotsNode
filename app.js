@@ -161,7 +161,7 @@ server.post('/api/:bot/:ver', function (req, res) {
             //}
             break;  
         case "boards":
-            
+            sendMessage(vars.chat_boards, 'Какие то данные приняты.');
             //boards();
             break;    
         case "esed":
