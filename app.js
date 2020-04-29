@@ -29,7 +29,7 @@ const bot = new TelegramBot(process.env.BOT_TOKEN, {polling: true});
 console.log('Бот запущен!');
 
 bot.onText(/\/start/, function (msg) { 
-    var str = `<b>Привет нигер, твои данные</b>:\n\nUser ID = <b>${msg.from.id}</b>`;
+    var str = `<b>Привет, твои данные</b>:\n\nUser ID = <b>${msg.from.id}</b>`;
     sendMessage(msg.from.id, str);
 });
 
@@ -54,8 +54,8 @@ bot.onText(/\/service/, function (msg) {
     }    
 });
 
-bot.onText(/\/user/, function (msg) { 
-    var str = `<b>Ваши данные</b>:\n\nUser ID = <b>${msg.from.id}</b>`;
+bot.onText(/\/info/, function (msg) { 
+    var str = `UserID = ${msg.from.id}\nUsername = ${msg.from.username}\nChat = ${msg.chat.id}`;
     sendMessage(msg.from.id, str);
 });
 
