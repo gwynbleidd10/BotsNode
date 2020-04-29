@@ -2,6 +2,8 @@ const fs = require('fs');
 const parser = require('fast-xml-parser');
 const fileupload = require('express-fileupload');
 
+
+console.log(process.env.v_apc);
 /*
 *   Базы
 */
