@@ -2,8 +2,6 @@ const fs = require('fs');
 const parser = require('fast-xml-parser');
 const fileupload = require('express-fileupload');
 
-
-console.log(process.env.V_APC);
 /*
 *   Базы
 */
@@ -109,6 +107,9 @@ server.get('/api/:bot', async (req, res) => {
             break;      
         case "esed":
             res.send("esed");
+            break;
+        case "boards":
+            res.send("boards");
             break;
         default:
             console.log("def");
