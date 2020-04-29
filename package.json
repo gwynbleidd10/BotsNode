@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/gwynbleidd10/BotsNode#readme",
   "dependencies": {
+    "express": "^4.17.1",
     "express-fileupload": "^1.1.7-alpha.3",
     "fast-xml-parser": "^3.16.0",
     "foreman": "3.0.1",
