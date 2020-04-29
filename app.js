@@ -61,7 +61,7 @@ bot.onText(/\/user/, function (msg) {
 
 bot.on('message', (msg) => {
     console.log('================New Message================');  
-    console.log(`UserID = ${msg.from.id}\nUsername = ${msg.from.username}`);
+    console.log(`UserID = ${msg.from.id}\nUsername = ${msg.from.username}\nChat = ${msg.chat.id}`);
     //const stream = fs.createReadStream('test.txt');
     //bot.sendDocument(msg.from.id, stream);
 });
@@ -281,6 +281,12 @@ function apcCheck(type, msgId){
         apcSend('status', msgId);
     }
 }
+
+/*
+*   Boards
+*/
+
+
 
 /*
 *   Esed
