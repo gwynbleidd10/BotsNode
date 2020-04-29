@@ -158,7 +158,11 @@ server.post('/api/:bot/:ver', function (req, res) {
 // }
 
             //}
-            break;      
+            break;  
+        case "boards":
+            
+            //boards();
+            break;    
         case "esed":
             esed();
             break;
