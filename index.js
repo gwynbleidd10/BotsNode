@@ -89,11 +89,11 @@ bot.onText(/\/info/, async (msg) => {
     sendMessage(msg.from.id, "Ваш Telegram ID = " + msg.from.id);
 });
 
-bot.on('message', (msg) => {
-    console.log('================New Message================');
-    console.log(`UserID = ${msg.from.id}\nUsername = ${msg.from.username}\nMsg = ${msg.text}`);
-    bot.sendMessage(msg.from.id, msg.text);
-});
+// bot.on('message', (msg) => {
+//     console.log('================New Message================');
+//     console.log(`UserID = ${msg.from.id}\nUsername = ${msg.from.username}\nMsg = ${msg.text}`);
+//     bot.sendMessage(msg.from.id, msg.text);
+// });
 
 const debug = process.env.BOT_PRIVATE;
 
