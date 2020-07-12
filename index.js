@@ -65,8 +65,15 @@ server.post('/api/esed', function (req, res) {
 *   Telegram
 */
 
+const token;
+if (process.env.MODE == 'debug') {
+    token = process.env.BOT_TEST;
+}
+else {
+    token = process.env.BOT_PROD;
+}
 const TelegramBot = require('node-telegram-bot-api');
-const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
+const bot = new TelegramBot(token, { polling: true });
 
 bot.onText(/\/ban/, async (msg) => {
     console.log('================Ban Message================');
