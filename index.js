@@ -1,4 +1,4 @@
-const fetch = require('isomorphic-unfetch')
+require('heroku-self-ping').default(process.env.APP_URL);
 
 require('dotenv').config()
 
@@ -39,7 +39,7 @@ server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 
 server.listen(port, function () {
-    console.log(`Сервер запущен на ${port} порту\n`);
+    console.log(`Сервер запущен на ${port} порту\nРежим: ${process.env.MODE}\n`);
 });
 
 /*
@@ -64,15 +64,6 @@ server.post('/api/esed', function (req, res) {
 /*
 *   Telegram
 */
-
-// const { Telegraf, Extra } = require('telegraf')
-// const bot = new Telegraf(process.env.BOT_TOKEN)
-// bot.launch()
-
-// bot.on('message', (ctx) => {
-//     console.log(ctx.message.chat)
-//     //ctx.reply(ctx.message.text)
-// })
 
 const TelegramBot = require('node-telegram-bot-api');
 const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });

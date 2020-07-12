@@ -24,6 +24,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
+    "heroku-self-ping": "^2.0.1",
     "isomorphic-unfetch": "^3.0.0",
     "mongodb": "^3.5.9",
     "telegraf": "^3.38.0"
