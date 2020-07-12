@@ -65,7 +65,7 @@ server.post('/api/esed', function (req, res) {
 *   Telegram
 */
 
-const token = '';
+let token;
 if (process.env.MODE == 'debug') {
     token = process.env.BOT_TEST;
 }
