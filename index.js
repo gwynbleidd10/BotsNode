@@ -39,7 +39,7 @@ server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 
 server.listen(port, function () {
-    console.log(`Сервер запущен на ${port} порту\n`);
+    console.log(`Сервер запущен на ${port} порту\nРежим: ${process.env.MODE}\n`);
 });
 
 /*
