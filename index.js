@@ -85,6 +85,10 @@ bot.onText(/\/ban/, async (msg) => {
     sendMessage(msg.from.id, str);
 });
 
+bot.onText(/\/info/, async (msg) => {
+    sendMessage(msg.from.id, "Ваш Telegram ID = " + msg.from.id);
+});
+
 bot.on('message', (msg) => {
     console.log('================New Message================');
     console.log(`UserID = ${msg.from.id}\nUsername = ${msg.from.username}\nMsg = ${msg.text}`);
