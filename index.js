@@ -30,21 +30,30 @@ selfPing();
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://" + process.env.MDB_USER + ":" + process.env.MDB_PASS + "@minare0.eswxz.mongodb.net/";
 
-async function MDBFindOne(filter) {
+async function MDBFindOne(db, coll, filter) {
     const client = await MongoClient.connect(uri, { useNewUrlParser: true });
-    const collection = client.db(process.env.MDB_DB).collection('esed');
+    const collection = client.db(db).collection(coll);
     const result = await collection.findOne(filter);
     client.close();
     return result;
 }
 
-async function MDBFind(filter) {
-    const client = await MongoClient.connect(uri, { useNewUrlParser: true, poolSize: 10 });
-    const collection = client.db(process.env.MDB_DB).collection('esed');
+async function MDBFind(db, coll, filter) {
+    const client = await MongoClient.connect(uri, { useNewUrlParser: true });
+    const collection = client.db(db).collection(coll);
     const result = await collection.find(filter).toArray();
     client.close();
     return result;
 }
+
+async function MDBInsertOne(db, coll, data) {
+    const client = await MongoClient.connect(uri, { useNewUrlParser: true });
+    const collection = client.db(db).collection(coll);
+    const result = await collection.insertOne(data);
+    client.close();
+    return result;
+}
+//await MDBInsertOne(process.env.MDB_ESED_DB, 'status', data);    
 
 /*
 *   Сервер
@@ -98,7 +107,7 @@ const bot = new TelegramBot(token, { polling: true });
 
 bot.onText(/\/ban/, async (msg) => {
     console.log('================Ban Message================');
-    const list = await MDBFind({ tg: '' });
+    const list = await MDBFind(process.env.MDB_ESED_DB, 'esed', { tg: '' });
     let str = '';
     list.forEach(item => {
         str += item.name + '\n';
@@ -129,7 +138,7 @@ async function esed(data) {
     //Ссылка на РК и Автора
     let str = `<a href=\"${data.url}\">${data.title}</a>\n================\n<a href="tg://user?id=${data.from}">`;
     console.log("=================MongoDB=================");
-    const info = await MDBFindOne({ "tg": data.from });
+    const info = await MDBFindOne(process.env.MDB_ESED_DB, 'users', { "tg": data.from });
     console.log(info)
     if (info !== null) {
         str += `${info.name}</a> `;
@@ -151,7 +160,7 @@ async function esed(data) {
         }
         let authors = data.author.split(',');
         for (var i = 0; i < authors.length; i++) {
-            const item = await MDBFindOne({ name: authors[i] });
+            const item = await MDBFindOne(process.env.MDB_ESED_DB, 'users', { name: authors[i] });
             if (item !== null) {
                 if (process.env.MODE == 'debug') {
                     sendMessage(debug, str);
@@ -174,7 +183,7 @@ async function esed(data) {
             let authors = data.list.split(',');
             let tmp = '', list = [];
             for (let i = 0; i < authors.length; i++) {
-                const item = await MDBFindOne({ name: authors[i] });
+                const item = await MDBFindOne(process.env.MDB_ESED_DB, 'users', { name: authors[i] });
                 if (item !== null) {
                     tmp += `\n<a href="tg://user?id=${item.tg}">${item.name}</a>`;
                     list.push(item.tg);
@@ -197,7 +206,7 @@ async function esed(data) {
         let reg = new RegExp(/.*ознакомлен.*/i);
         if (info == undefined || !info.super) {
             str += `<i>ввел(а) отчет:</i>\n================\nСтатус: <i>${data.status}</i>\n\n`;
-            const item = await MDBFindOne({ name: data.author });
+            const item = await MDBFindOne(process.env.MDB_ESED_DB, 'users', { name: data.author });
             if (item.super) {
                 if (data.text != undefined) {
                     str += data.text;
@@ -221,14 +230,14 @@ async function esed(data) {
                     else {
                         sendMessage(item.tg, str);
                     }
-                }                
+                }
             }
         }
     }
 }
 
-function sendMessage(chatId, message) {
-    console.log("==================Telegram==================");
+async function sendMessage(chatId, message) {
+    console.log("==================Telegram=================="); 
     bot.sendMessage(chatId, message, { disable_web_page_preview: true, parse_mode: "HTML" }).catch((error) => {
         bot.sendMessage(debug, error, { disable_web_page_preview: true, parse_mode: "HTML" });
     });
