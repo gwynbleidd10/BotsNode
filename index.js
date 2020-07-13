@@ -1,7 +1,23 @@
-require('heroku-self-ping').default(process.env.APP_URL);
-
 require('dotenv').config()
 
+/*
+*   Self-Ping
+*/
+
+let ping = require('ping');
+
+function selfPing() {
+    var hosts = [process.env.APP_URL];
+    hosts.forEach(function(host){
+        ping.sys.probe(host, function(isAlive){
+            var msg = isAlive ? 'host ' + host + ' is alive' : 'host ' + host + ' is dead';
+            console.log(msg);
+        });
+    });
+}
+setTimeout(selfPing, 1000 * 60 * 25);
+
+selfPing();
 /*
 *   MongoDB
 */
