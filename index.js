@@ -4,20 +4,25 @@ require('dotenv').config()
 *   Self-Ping
 */
 
-let ping = require('ping');
+const ping = require('node-http-ping');
 
 function selfPing() {
-    var hosts = [process.env.APP_URL];
-    hosts.forEach(function(host){
-        ping.sys.probe(host, function(isAlive){
-            var msg = isAlive ? 'host ' + host + ' is alive' : 'host ' + host + ' is dead';
-            console.log(msg);
-        });
+    const pingUrl = [process.env.APP_URL];
+    pingUrl.forEach(function (host) {
+        ping(host)
+            .then(time => {
+                console.log("OK: " + host + ', ping: ' + time);
+
+            })
+            .catch((err) => {
+                console.log("ERR: " + host);
+            });
     });
 }
 setTimeout(selfPing, 1000 * 60 * 25);
 
 selfPing();
+
 /*
 *   MongoDB
 */

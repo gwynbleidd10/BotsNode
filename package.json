@@ -27,6 +27,7 @@
     "express": "4.17.1",
     "isomorphic-unfetch": "^3.0.0",
     "mongodb": "^3.5.9",
+    "node-http-ping": "^0.3.1",
     "node-telegram-bot-api": "^0.50.0",
     "ping": "^0.2.3",
     "telegraf": "^3.38.0"
