@@ -197,15 +197,31 @@ async function esed(data) {
         let reg = new RegExp(/.*ознакомлен.*/i);
         if (info == undefined || !info.super) {
             str += `<i>ввел(а) отчет:</i>\n================\nСтатус: <i>${data.status}</i>\n\n`;
-            const item = await MDBFindOne({ name: data.author });            
-            if ((data.text != undefined && !reg.test(data.text.substring(0, 10).toLowerCase())) || item.super) {                
-                str += data.text;                
+            const item = await MDBFindOne({ name: data.author });
+            if (item.super) {
+                if (data.text != undefined) {
+                    str += data.text;
+                }
+                else {
+                    str += 'Введен пустой отчет!';
+                }
                 if (process.env.MODE == 'debug') {
                     sendMessage(debug, str);
                 }
                 else {
-                    sendMessage(item.tg, str + tmp);
+                    sendMessage(item.tg, str);
                 }
+            }
+            else {
+                if (data.text != undefined && !reg.test(data.text.substring(0, 10).toLowerCase())) {
+                    str += data.text;
+                    if (process.env.MODE == 'debug') {
+                        sendMessage(debug, str);
+                    }
+                    else {
+                        sendMessage(item.tg, str);
+                    }
+                }                
             }
         }
     }
