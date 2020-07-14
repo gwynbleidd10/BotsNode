@@ -63,9 +63,9 @@ server.get('/api/esed', function (req, res) {
     res.json({ version: process.env.SCRIPT_VERSION });
 });
 
-server.post('/api/esed', function (req, res) {
-    esed(req.body);
+server.post('/api/esed', function (req, res) {    
     res.status(200).json({ 'status': 'OK' });
+    esed(req.body);
 });
 
 /*
