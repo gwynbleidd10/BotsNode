@@ -63,7 +63,11 @@ server.get('/api/esed', function (req, res) {
     res.json({ version: process.env.SCRIPT_VERSION });
 });
 
-server.post('/api/esed', function (req, res) {    
+server.get('/api/esed/version', function (req, res) {
+    res.json({ version: process.env.SCRIPT_VERSION });
+});
+
+server.post('/api/esed', function (req, res) {
     res.status(200).json({ 'status': 'OK' });
     esed(req.body);
 });
@@ -214,7 +218,7 @@ async function esed(data) {
 }
 
 async function sendMessage(chatId, message) {
-    console.log("==================Telegram=================="); 
+    console.log("==================Telegram==================");
     bot.sendMessage(chatId, message, { disable_web_page_preview: true, parse_mode: "HTML" }).catch((error) => {
         bot.sendMessage(debug, error, { disable_web_page_preview: true, parse_mode: "HTML" });
     });
