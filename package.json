@@ -2,9 +2,9 @@
   "name": "TelegramIntegrationNode",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "dev": "nodemon index.js",
+    "dev": "nodemon server.js",
     "test": "nodemon test.js"
   },
   "repository": {
