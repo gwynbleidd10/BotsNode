@@ -88,7 +88,7 @@ const bot = new TelegramBot(token, { polling: true });
 
 bot.onText(/\/ban/, async (msg) => {
     console.log('================Ban Message================');
-    const list = await MDBFind(process.env.MDB_ESED_DB, 'esed', { tg: '' });
+    const list = await MDBFind(process.env.MDB_ESED_DB, 'users', { tg: '' });
     let str = '';
     list.forEach(item => {
         str += item.name + '\n';
@@ -188,31 +188,35 @@ async function esed(data) {
         if (info == undefined || !info.super) {
             str += `<i>ввел(а) отчет:</i>\n================\nСтатус: <i>${data.status}</i>\n\n`;
             const item = await MDBFindOne(process.env.MDB_ESED_DB, 'users', { name: data.author });
-            if (item.super) {
-                if (data.text != undefined) {
-                    str += data.text;
-                }
-                else {
-                    str += 'Введен пустой отчет!';
-                }
-                if (process.env.MODE == 'debug') {
-                    sendMessage(debug, str);
-                }
-                else {
-                    sendMessage(item.tg, str);
-                }
-            }
-            else {
+            // if (item.super) {
+            //     if (data.text != undefined) {
+            //         str += data.text;
+            //     }
+            //     else {
+            //         str += 'Введен пустой отчет!';
+            //     }
+            //     if (process.env.MODE == 'debug') {
+            //         sendMessage(debug, str);
+            //     }
+            //     else {
+            //         sendMessage(item.tg, str);
+            //     }
+            // }
+            // else {
                 if (data.text != undefined && !reg.test(data.text.substring(0, 10).toLowerCase())) {
                     str += data.text;
                     if (process.env.MODE == 'debug') {
-                        sendMessage(debug, str);
+                        setTimeout(() => {
+                            console.log(str + '\n\n' + info)
+                            //sendMessage(debug, str + '\n\n' + info);
+                        }, 10000);
+                        
                     }
                     else {
                         sendMessage(item.tg, str);
                     }
                 }
-            }
+            // }
         }
     }
 }
