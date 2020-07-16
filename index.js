@@ -1,13 +1,16 @@
-require('dotenv').config()
-
 /*
-*   MongoDB
+------------------------------------------------------------------------------------------------------
+------------------------------------------------Init--------------------------------------------------
+------------------------------------------------------------------------------------------------------
 */
 
-const MDB = require('./MongoDB')
+require('dotenv').config()    //.env
+const MDB = require('./MongoDB')    //Mongo DB module
 
 /*
-*   Сервер
+------------------------------------------------------------------------------------------------------
+----------------------------------------------Express-------------------------------------------------
+------------------------------------------------------------------------------------------------------
 */
 
 const express = require('express')
@@ -20,7 +23,7 @@ server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 
 server.listen(port, function () {
-    console.log(`Сервер запущен на ${port} порту\nРежим: ${process.env.MODE}\n`);
+    console.log(`Express port: ${port}\nMode: ${process.env.MODE}\n`);
 });
 
 /*
@@ -32,7 +35,7 @@ server.get('/', function (req, res) {
 });
 
 server.get('/ping', function (req, res) {
-    res.status(200).json('Pong');
+    res.status(200).json({ status: "OK" });
 });
 
 //  ESED
@@ -51,7 +54,9 @@ server.post('/api/esed', function (req, res) {
 });
 
 /*
-*   Telegram
+------------------------------------------------------------------------------------------------------
+---------------------------------------------Telegram-------------------------------------------------
+------------------------------------------------------------------------------------------------------
 */
 
 let token;
@@ -63,6 +68,10 @@ else {
 }
 const TelegramBot = require('node-telegram-bot-api');
 const bot = new TelegramBot(token, { polling: true });
+
+bot.on('polling_error', (error) => {
+    console.log(error.code);  // => 'EFATAL'
+});
 
 bot.onText(/\/ban/, async (msg) => {
     console.log('================Ban Message================');
@@ -78,16 +87,33 @@ bot.onText(/\/info/, async (msg) => {
     sendMessage(msg.from.id, "Ваш Telegram ID = " + msg.from.id);
 });
 
-// bot.on('message', (msg) => {
-//     console.log('================New Message================');
-//     console.log(`UserID = ${msg.from.id}\nUsername = ${msg.from.username}\nMsg = ${msg.text}`);
-//     bot.sendMessage(msg.from.id, msg.text);
-// });
+async function sendMessage(chatId, message) {
+    console.log("==================Telegram==================");
+    const res = await bot.sendMessage(chatId, message, { disable_web_page_preview: true, parse_mode: "HTML" }).catch((error) => {
+        bot.sendMessage(debug, "Error code:\n" + error.code + "\nError body:\n" + JSON.stringify(error.response.body) + "\nMessage:\n" + message, { disable_web_page_preview: true, parse_mode: "HTML" });
+    });
+    let error = false;
+    if (res) {
+        console.log(`Сообщение отправлено.`);
+    }
+    else {
+        error = true;
+    }
+    if (error) {
+
+    }
+    else {
+
+    }
+    //await MDB.InsertOne(process.env.MDB_ESED_DB, 'status', {});
+}
 
 const debug = process.env.BOT_PRIVATE;
 
 /*
-*   Functions
+------------------------------------------------------------------------------------------------------
+---------------------------------------------Functions------------------------------------------------
+------------------------------------------------------------------------------------------------------
 */
 
 async function esed(data) {
@@ -96,7 +122,6 @@ async function esed(data) {
     console.log(data);
     //Ссылка на РК и Автора
     let str = `<a href=\"${data.url}\">${data.title}</a>\n================\n<a href="tg://user?id=${data.from}">`;
-    console.log("=================MongoDB=================");
     const info = await MDB.FindOne(process.env.MDB_ESED_DB, 'users', { "tg": data.from });
     console.log(info)
     if (info !== null) {
@@ -181,28 +206,20 @@ async function esed(data) {
             //     }
             // }
             // else {
-                if (data.text != undefined && !reg.test(data.text.substring(0, 10).toLowerCase())) {
-                    str += data.text;
-                    if (process.env.MODE == 'debug') {
-                        setTimeout(() => {
-                            console.log(str + '\n\n' + info)
-                            //sendMessage(debug, str + '\n\n' + info);
-                        }, 10000);
-                        
-                    }
-                    else {
-                        sendMessage(item.tg, str);
-                    }
+            if (data.text != undefined && !reg.test(data.text.substring(0, 10).toLowerCase())) {
+                str += data.text;
+                if (process.env.MODE == 'debug') {
+                    setTimeout(() => {
+                        console.log(str + '\n\n' + info)
+                        //sendMessage(debug, str + '\n\n' + info);
+                    }, 10000);
+
                 }
+                else {
+                    sendMessage(item.tg, str);
+                }
+            }
             // }
         }
     }
-}
-
-async function sendMessage(chatId, message) {
-    console.log("==================Telegram==================");
-    bot.sendMessage(chatId, message, { disable_web_page_preview: true, parse_mode: "HTML" }).catch((error) => {
-        bot.sendMessage(debug, error, { disable_web_page_preview: true, parse_mode: "HTML" });
-    });
-    console.log(`Сообщение отправлено.`);
 }
