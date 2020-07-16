@@ -9,8 +9,11 @@ console.log('===============Functions=init================');
 
 async function esed(data) {
     let status = {
+        mode: process.env.MODE,
         from: '',
-        send: true
+        date: new Date(),
+        send: true,
+        data: data              
     };
     let tmp;
     //Точка входа
