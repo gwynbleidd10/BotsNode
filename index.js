@@ -70,7 +70,8 @@ const TelegramBot = require('node-telegram-bot-api');
 const bot = new TelegramBot(token, { polling: true });
 
 bot.on('polling_error', (error) => {
-    console.log(error.code);  // => 'EFATAL'
+    console.error(error.code);
+    console.error(error.response.body);
 });
 
 bot.onText(/\/ban/, async (msg) => {
@@ -92,20 +93,7 @@ async function sendMessage(chatId, message) {
     const res = await bot.sendMessage(chatId, message, { disable_web_page_preview: true, parse_mode: "HTML" }).catch((error) => {
         bot.sendMessage(debug, "Error code:\n" + error.code + "\nError body:\n" + JSON.stringify(error.response.body) + "\nMessage:\n" + message, { disable_web_page_preview: true, parse_mode: "HTML" });
     });
-    let error = false;
-    if (res) {
-        console.log(`Сообщение отправлено.`);
-    }
-    else {
-        error = true;
-    }
-    if (error) {
-
-    }
-    else {
-
-    }
-    //await MDB.InsertOne(process.env.MDB_ESED_DB, 'status', {});
+    return res;
 }
 
 const debug = process.env.BOT_PRIVATE;
@@ -117,6 +105,7 @@ const debug = process.env.BOT_PRIVATE;
 */
 
 async function esed(data) {
+    let status = {};
     //Точка входа
     console.log("==================ESED==================");
     console.log(data);
@@ -125,6 +114,7 @@ async function esed(data) {
     const info = await MDB.FindOne(process.env.MDB_ESED_DB, 'users', { "tg": data.from });
     console.log(info)
     if (info !== null) {
+        status.from = info.name
         str += `${info.name}</a> `;
     }
     else {
@@ -191,35 +181,36 @@ async function esed(data) {
         if (info == undefined || !info.super) {
             str += `<i>ввел(а) отчет:</i>\n================\nСтатус: <i>${data.status}</i>\n\n`;
             const item = await MDB.FindOne(process.env.MDB_ESED_DB, 'users', { name: data.author });
-            // if (item.super) {
-            //     if (data.text != undefined) {
-            //         str += data.text;
-            //     }
-            //     else {
-            //         str += 'Введен пустой отчет!';
-            //     }
-            //     if (process.env.MODE == 'debug') {
-            //         sendMessage(debug, str);
-            //     }
-            //     else {
-            //         sendMessage(item.tg, str);
-            //     }
-            // }
-            // else {
-            if (data.text != undefined && !reg.test(data.text.substring(0, 10).toLowerCase())) {
-                str += data.text;
+            if (item.super) {
+                if (data.text != undefined) {
+                    str += data.text;
+                }
+                else {
+                    str += 'Введен пустой отчет!';
+                }
                 if (process.env.MODE == 'debug') {
-                    setTimeout(() => {
-                        console.log(str + '\n\n' + info)
-                        //sendMessage(debug, str + '\n\n' + info);
-                    }, 10000);
-
+                    sendMessage(debug, str);
                 }
                 else {
                     sendMessage(item.tg, str);
                 }
             }
-            // }
+            else {
+                if (data.text != undefined && !reg.test(data.text.substring(0, 10).toLowerCase())) {
+                    str += data.text;
+                    if (process.env.MODE == 'debug') {
+                        setTimeout(() => {
+                            console.log(str + '\n\n' + info)
+                            //sendMessage(debug, str + '\n\n' + info);
+                        }, 10000);
+
+                    }
+                    else {
+                        sendMessage(item.tg, str);
+                    }
+                }
+            }
         }
     }
+
 }
