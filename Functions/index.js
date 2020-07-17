@@ -17,17 +17,15 @@ function getTime() {
 async function esed(data) {
     let status = {
         error: false,
+        send: true,
         mode: process.env.MODE,
         from: '',
         date: new Date(),
-        send: true,
-        data: data        
+        data: data
     };
-    let tmp;
-    //console.log("==================ESED==================");
     let str = `<a href=\"${data.url}\">${data.title}</a>\n================\n<a href="tg://user?id=${data.from}">`;
     const info = await MDB.FindOne(process.env.MDB_ESED_DB, 'users', { "tg": data.from });
-    tmp = (info != null) ? info.name : "Неизвестный пользователь";
+    let tmp = (info != null) ? info.name : "Неизвестный пользователь";
     console.log(tmp, data.type, data.title);
     status.from = tmp;
     str += tmp + "</a> ";
@@ -38,7 +36,12 @@ async function esed(data) {
         let authors = data.author.split(',');
         for (var i = 0; i < authors.length; i++) {
             const item = await MDB.FindOne(process.env.MDB_ESED_DB, 'users', { name: authors[i] });
-            status.send = (await TG.sendMessage((process.env.MODE == 'debug') ? "debug" : item.tg, str) != undefined) ? true : false;
+            if (item != null) {
+                status.send = (await TG.sendMessage((process.env.MODE == 'debug') ? "debug" : item.tg, str) != undefined) ? true : false;
+            }
+            else {
+                status.error = `Автора нет в справочнике: ${data.author}`;
+            }            
         }
         MDB.InsertOne(process.env.MDB_ESED_DB, 'status', status);
     }
@@ -76,10 +79,10 @@ async function esed(data) {
                     if (data.text != undefined && !reg.test(data.text.substring(0, 10).toLowerCase())) {
                         status.send = (await TG.sendMessage((process.env.MODE == 'debug') ? "debug" : item.tg, str += data.text) != undefined) ? true : false;
                     }
-                }                
+                }
             }
             else {
-                status.error = `Автора поручения нет в справочнике: ${data.author}`;
+                status.error = `Автора нет в справочнике: ${data.author}`;
             }
             MDB.InsertOne(process.env.MDB_ESED_DB, 'status', status);
         }
