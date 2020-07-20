@@ -23,7 +23,7 @@ async function esed(data) {
         date: new Date(),
         data: data
     };
-    let list = '';
+    let list = [], arr = [], stat = [], authors, user;
     let str = `<a href=\"${data.url}\">${data.title}</a>\n================\n<a href="tg://user?id=${data.from}">`;
     const info = await MDB.FindOne(process.env.MDB_ESED_DB, 'users', { "tg": data.from });
     //debug
@@ -37,10 +37,10 @@ async function esed(data) {
         //{title, url, author, type, status, [comment], from}
         str += ((data.type == 'visa') ? `<i>завизировал(а)` : `<i>подписал(а)`) + `</i>\n================\n<i>${data.status}</i>`;
         str += (data.comment != undefined) ? `\n================\n<i>Комментарий</i>: ${data.comment}` : '';
-        let authors = data.author.split(',');
+        authors = data.author.split(',');
         tmp = [];
-        for (var i = 0; i < authors.length; i++) {
-            const user = await MDB.FindOne(process.env.MDB_ESED_DB, 'users', { name: authors[i] });
+        for (let i = 0; i < authors.length; i++) {
+            user = await MDB.FindOne(process.env.MDB_ESED_DB, 'users', { name: authors[i] });
             tmp.push(authors[i] + ": " + await check(data, user, str));
         }
         status.send = tmp;
@@ -51,10 +51,9 @@ async function esed(data) {
         //{title, url, type, list, from}
         if (info == null || !info.super) {  //Проверка на Марину
             str += ((data.type == 'visa-send') ? `отправил(а) на <i>визу` : `отправил(а) на <i>подпись`) + `</i>\n================`;
-            let authors = data.list.split(',');
-            tmp = '', list = [], arr = [];
+            authors = data.list.split(',');
             for (let i = 0; i < authors.length; i++) {
-                const user = await MDB.FindOne(process.env.MDB_ESED_DB, 'users', { name: authors[i] });
+                user = await MDB.FindOne(process.env.MDB_ESED_DB, 'users', { name: authors[i] });
                 if (user != null) {
                     tmp += '\n' + ((user.tg != '') ? `<a href="tg://user?id=${user.tg}">${authors[i]}</a>` : authors[i]);
                     list.push(user.tg);
@@ -67,23 +66,20 @@ async function esed(data) {
                 user = await MDB.FindOne(process.env.MDB_ESED_DB, 'users', { tg: list[i] });
                 arr.push(user.name + ": " + await check(data, user, str + tmp));
             }
-            status.send = arr;
+            status.send = (list.length > 0) ? arr : "Ни одного пользователя нет в справочнике";
             MDB.InsertOne(process.env.MDB_ESED_DB, 'status', status);
             (process.env.MODE == "debug") ? console.log(status) : '';
         }
     }
     else if (data.type == 'resolution') {
         //{title, url, type, list {title, list, [date]}, from}
-        let arr = [];
         str += 'назначил(а) <i>поручение</i>\n================';
         for (let i = 0; i < data.list.length; i++) {
             if (data.list[i].control == "true") {
-                let stat = [];
                 tmp = '';
                 tmp += '\nПоручение: <i>' + data.list[i].title + '</i>\n================\nСрок: <i>' + data.list[i].date + '</i>\n================';
-                let authors = data.list[i].list.split(',');
+                authors = data.list[i].list.split(',');
                 list = [];
-                let user;
                 for (let i = 0; i < authors.length; i++) {
                     user = await MDB.FindOne(process.env.MDB_ESED_DB, 'users', { name: (authors[i][0] == ('(')) ? authors[i].substr(7, authors[i].length - 7) : (authors[i][0] == ('+')) ? authors[i].substr(2, authors[i].length - 2) : authors[i] });
                     if (user != null) {
@@ -98,7 +94,7 @@ async function esed(data) {
                     user = await MDB.FindOne(process.env.MDB_ESED_DB, 'users', { tg: list[i] });
                     stat.push(user.name + ": " + await check(data, user, str + tmp));
                 }
-                arr.push(stat);
+                arr.push(status.send = (list.length > 0) ? stat : "Ни одного пользователя нет в справочнике");
             }
             else {
                 arr.push(["Неконтрольное поручение"]);
@@ -112,7 +108,7 @@ async function esed(data) {
         //{title, url, type, status, text, author, from}
         if (info == null || !info.super) { //Проверка на Марину
             str += `<i>ввел(а) отчет:</i>\n================\nСтатус: <i>${data.status}</i>\n================\n`;
-            const user = await MDB.FindOne(process.env.MDB_ESED_DB, 'users', { name: data.author });
+            user = await MDB.FindOne(process.env.MDB_ESED_DB, 'users', { name: data.author });
             status.send = await check(data, user, str);
             MDB.InsertOne(process.env.MDB_ESED_DB, 'status', status);
             (process.env.MODE == "debug") ? console.log(status) : '';
