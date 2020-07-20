@@ -41,39 +41,35 @@ async function esed(data) {
         tmp = [];
         for (var i = 0; i < authors.length; i++) {
             const user = await MDB.FindOne(process.env.MDB_ESED_DB, 'users', { name: authors[i] });
-            tmp.push(author[i] + ": " + await checkAlerts(data, user, str));
+            tmp.push(authors[i] + ": " + await check(data, user, str));
         }
-        status.send = tmp;        
+        status.send = tmp;
         MDB.InsertOne(process.env.MDB_ESED_DB, 'status', status);
         (process.env.MODE == "debug") ? console.log(status) : '';
     }
     else if (data.type == 'visa-send' || data.type == 'sign-send') {
         //{title, url, type, list, from}
-        str += ((data.type == 'visa-send') ? `отправил(а) на <i>визу` : `отправил(а) на <i>подпись`) + `</i>\n================`;
-        if (info == null || !info.super) {
+        if (info == null || !info.super) {  //Проверка на Марину
+            str += ((data.type == 'visa-send') ? `отправил(а) на <i>визу` : `отправил(а) на <i>подпись`) + `</i>\n================`;
             let authors = data.list.split(',');
-            tmp = '', list = [];
+            tmp = '', list = [], arr = [];
             for (let i = 0; i < authors.length; i++) {
-                const item = await MDB.FindOne(process.env.MDB_ESED_DB, 'users', { name: authors[i] });
-                if (item != null) {
-                    tmp += `\n<a href="tg://user?id=${item.tg}">${item.name}</a>`;
-                    list.push(item.tg);
+                const user = await MDB.FindOne(process.env.MDB_ESED_DB, 'users', { name: authors[i] });
+                if (user != null) {
+                    tmp += '\n' + ((user.tg != '') ? `<a href="tg://user?id=${user.tg}">${authors[i]}</a>` : authors[i]);
+                    list.push(user.tg);
                 }
                 else {
                     tmp += '\n' + authors[i];
                 }
             }
-            if (list.length != 0) {
-                for (let i = 0; i < list.length; i++) {
-                    status.send = (await TG.sendMessage((process.env.MODE == 'debug') ? "debug" : list[i], str + tmp) != undefined) ? true : false;
-                }
+            for (let i = 0; i < list.length; i++) {
+                user = await MDB.FindOne(process.env.MDB_ESED_DB, 'users', { tg: list[i] });
+                arr.push(user.name + ": " + await check(data, user, str + tmp));
             }
-            else {
-                status.error = `Авторов нет в справочнике: ${data.list}`;
-            }
-            //debug
-            (process.env.MODE == "debug") ? console.log(status) : '';
+            status.send = arr;
             MDB.InsertOne(process.env.MDB_ESED_DB, 'status', status);
+            (process.env.MODE == "debug") ? console.log(status) : '';
         }
     }
     else if (data.type == 'resolution') {
@@ -91,12 +87,7 @@ async function esed(data) {
                 for (let i = 0; i < authors.length; i++) {
                     user = await MDB.FindOne(process.env.MDB_ESED_DB, 'users', { name: (authors[i][0] == ('(')) ? authors[i].substr(7, authors[i].length - 7) : (authors[i][0] == ('+')) ? authors[i].substr(2, authors[i].length - 2) : authors[i] });
                     if (user != null) {
-                        if (user.tg != '') {
-                            tmp += '\n' + `<a href="tg://user?id=${user.tg}">${authors[i]}</a>`;
-                        }
-                        else {
-                            tmp += '\n' + authors[i];
-                        }
+                        tmp += '\n' + ((user.tg != '') ? `<a href="tg://user?id=${user.tg}">${authors[i]}</a>` : authors[i]);
                         list.push(user.tg);
                     }
                     else {
@@ -112,11 +103,10 @@ async function esed(data) {
             else {
                 arr.push(["Неконтрольное поручение"]);
             }
-
         }
         status.send = arr;
         MDB.InsertOne(process.env.MDB_ESED_DB, 'status', status);
-        (process.env.MODE == "debug") ? console.log(status) : '';        
+        (process.env.MODE == "debug") ? console.log(status) : '';
     }
     else {
         //{title, url, type, status, text, author, from}
@@ -125,7 +115,7 @@ async function esed(data) {
             const user = await MDB.FindOne(process.env.MDB_ESED_DB, 'users', { name: data.author });
             status.send = await check(data, user, str);
             MDB.InsertOne(process.env.MDB_ESED_DB, 'status', status);
-            (process.env.MODE == "debug") ? console.log(status) : '';            
+            (process.env.MODE == "debug") ? console.log(status) : '';
         }
     }
     (process.env.MODE == "debug") ? console.log("ESED END") : '';
@@ -150,9 +140,6 @@ async function check(data, info, str) {
                     return "Ознакомление";
                 }
             }
-        }
-        else if (data.type == 'visa-send' || data.type == 'sign-send') {
-
         }
         else {
             return await TG.sendMessage((process.env.MODE == 'debug') ? "debug" : info.tg, str);
