@@ -11,7 +11,7 @@ const uri = "mongodb+srv://" + process.env.MDB_USER + ":" + process.env.MDB_PASS
 
 async function FindOne(db, coll, filter) {
     //console.log("===============MDB.FindOne==============");
-    const client = await MongoClient.connect(uri, { useNewUrlParser: true }).catch((e) => { console.error(e) });
+    const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }).catch((e) => { console.error(e) });
     const collection = client.db(db).collection(coll);
     const result = await collection.findOne(filter);
     client.close();
@@ -19,7 +19,7 @@ async function FindOne(db, coll, filter) {
 }
 async function Find(db, coll, filter) {
     //console.log("================MDB.Find================");
-    const client = await MongoClient.connect(uri, { useNewUrlParser: true });
+    const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     const collection = client.db(db).collection(coll);
     const result = await collection.find(filter).toArray();
     client.close();
@@ -27,7 +27,7 @@ async function Find(db, coll, filter) {
 }
 async function InsertOne(db, coll, data) {
     //console.log("==============MDB.InsertOne=============");
-    const client = await MongoClient.connect(uri, { useNewUrlParser: true });
+    const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     const collection = client.db(db).collection(coll);
     const result = await collection.insertOne(data);
     client.close();

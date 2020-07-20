@@ -1,106 +1,127 @@
 [
     {
         "super": true,
+        "alerts": "control",
         "tg": "244597033",
         "name": "Карамзина Марина Анатольевна"
     },
     {
         "super": false,
+        "alerts": "control",
         "tg": "651299024",
         "name": "Татаринов Андрей Кононович"
     },
     {
         "super": false,
+        "alerts": "control",
         "tg": "1035080334",
         "name": "Саввинова Анна Петровна"
     },
     {
         "super": false,
+        "alerts": "control",
         "tg": "200487398",
         "name": "Бурковская Елена Владимировна"
     },
     {
         "super": false,
+        "alerts": "control",
         "tg": "144674173",
         "name": "Винокуров Василий Дмитриевич"
     },
     {
         "super": false,
+        "alerts": "control",
         "tg": "500062077",
         "name": "Герасимова Юлия Олеговна"
     },
     {
         "super": false,
+        "alerts": "control",
         "tg": "948276462",
         "name": "Ефремов Степан Иннокентьевич"
     },
     {
         "super": false,
+        "alerts": "control",
         "tg": "164571696",
         "name": "Иванов Алексей Климентьевич"
     },
     {
         "super": false,
+        "alerts": "control",
         "tg": "351070290",
         "name": "Иванов Петр Гаврильевич"
     },
     {
         "super": false,
+        "alerts": "control",
         "tg": "810717038",
         "name": "Иванова Мария Владимировна"
     },
     {
         "super": false,
+        "alerts": "control",
         "tg": "530692428",
         "name": "Красильникова Елена Георгиевна"
     },
     {
         "super": false,
+        "alerts": "control",
         "tg": "324416729",
         "name": "Михайлов Сергей Гаврильевич"
     },
     {
         "super": false,
+        "alerts": "control",
         "tg": "324145269",
         "name": "Попов Дмитрий Васильевич"
     },
     {
         "super": false,
+        "alerts": "control",
         "tg": "379077932",
         "name": "Припузов Павел Сергеевич"
     },
     {
         "super": false,
+        "alerts":"control",
         "tg": "337277275",
         "name": "Рудых Вадим Андреевич"
     },
     {
         "super": false,
+        "alerts": "control",
         "tg": "335241862",
         "name": "Тихонов Сергей Вячеславович"
     },
     {
         "super": false,
+        "alerts": "control",
         "tg": "453553234",
         "name": "Соломянный Роман Игоревич"
     },
     {
         "super": false,
+        "alerts": "control",
         "tg": "",
         "name": "Павлов Алексей Юрьевич"
     },
     {
         "super": false,
+        "alerts": "control",
         "tg": "",
         "name": "Мастеров Артур Яковлевич"
     },
     {
         "super": false,
+        "alerts": "control",
         "tg": "",
         "name": "Иванова Татьяна Прокопьевна"
     },
     {
         "super": false,
+        "alerts": "control",
         "tg": "",
         "name": "Дьяконова Вилена Михайловна"
     }

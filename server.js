@@ -41,10 +41,6 @@ server.get('/ping', function (req, res) {
 
 //  ESED
 
-server.get('/api/esed', function (req, res) {
-    res.json({ version: process.env.SCRIPT_VERSION });
-});
-
 server.get('/api/esed/version', function (req, res) {
     res.json({ version: process.env.SCRIPT_VERSION });
 });

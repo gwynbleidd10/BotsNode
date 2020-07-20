@@ -1,5 +1,5 @@
 module.exports = {
-    sendMessage: sendMessage
+    sendMessage: sendMessage,
 }
 
 console.log('================Telegram=init================');
@@ -28,11 +28,10 @@ bot.onText(/\/info/, async (msg) => {
 });
 
 async function sendMessage(chatId, message) {
+    (process.env.MODE == "debug") ? console.log("==================Telegram==================") : '';
     chatId = (chatId == "debug") ? process.env.BOT_DEBUG : chatId;
-    //console.log("==================Telegram==================");
     const res = await bot.sendMessage(chatId, message, { disable_web_page_preview: true, parse_mode: "HTML" }).catch((error) => {
         bot.sendMessage(process.env.BOT_DEBUG, "Error code:\n" + error.code + "\nError body:\n" + JSON.stringify(error.response.body) + "\nMessage:\n" + message, { disable_web_page_preview: true, parse_mode: "HTML" });
     });
-    (await res != undefined) ? console.log('Сообщение отправлено') : '';
-    return res;
+    return (await res != undefined) ? 'Сообщение успешно отправлено' : 'Возникла ошибка при отправке сообщения';
 }
