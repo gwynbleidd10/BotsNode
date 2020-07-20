@@ -106,10 +106,10 @@ async function esed(data) {
             }
             for (let i = 0; i < list.length; i++) {
                 user = await MDB.FindOne(process.env.MDB_ESED_DB, 'users', { tg: list[i] });
-                stat.push((users != null)?user.name: + ": " + await checkAlerts(data, user, str + tmp));
+                stat.push((user != null) ? user.name : + ": " + await checkAlerts(data, user, str + tmp));
             }
             arr.push(stat);
-        }        
+        }
         status.send = arr;
         //debug
         (process.env.MODE == "debug") ? console.log(status) : '';
