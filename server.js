@@ -8,6 +8,7 @@ require('dotenv').config()    //.env
 const MDB = require('./MongoDB')    //Mongo DB module
 const TG = require('./Telegram')    //Telegram module
 const FC = require('./Functions')    //Functions module
+console.log((new Date(Date.now() - (-32400000))));
 
 /*
 ------------------------------------------------------------------------------------------------------

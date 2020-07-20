@@ -16,7 +16,6 @@ async function esed(data) {
         date: (new Date(Date.now() - (-32400000))),
         data: data
     };
-    console.log(status.date);
     let list = [], arr = [], stat = [], authors, user;
     let str = `<a href=\"${data.url}\">${data.title}</a>\n================\n<a href="tg://user?id=${data.from}">`;
     const info = await MDB.FindOne(process.env.MDB_ESED_DB, 'users', { "tg": data.from });
