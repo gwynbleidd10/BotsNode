@@ -34,7 +34,9 @@ async function esed(data) {
         tmp = [];
         for (let i = 0; i < authors.length; i++) {
             user = await MDB.FindOne(process.env.MDB_ESED_DB, 'users', { name: authors[i] });
-            tmp.push(authors[i] + ": " + await check(data, user, str));
+            if (data.from != user.tg) {
+                tmp.push(authors[i] + ": " + await check(data, user, str));
+            }
         }
         status.send = tmp;
         MDB.InsertOne(process.env.MDB_ESED_DB, 'status', status);
@@ -51,7 +53,7 @@ async function esed(data) {
                     tmp += '\n' + ((user.tg != '') ? `<a href="tg://user?id=${user.tg}">${authors[i]}</a>` : authors[i]);
                     if (data.from != user.tg) {
                         list.push(user.tg);
-                    }                    
+                    }
                 }
                 else {
                     tmp += '\n' + authors[i];
