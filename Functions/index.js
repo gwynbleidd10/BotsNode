@@ -49,7 +49,9 @@ async function esed(data) {
                 user = await MDB.FindOne(process.env.MDB_ESED_DB, 'users', { name: authors[i] });
                 if (user != null) {
                     tmp += '\n' + ((user.tg != '') ? `<a href="tg://user?id=${user.tg}">${authors[i]}</a>` : authors[i]);
-                    list.push(user.tg);
+                    if (data.from != user.tg) {
+                        list.push(user.tg);
+                    }                    
                 }
                 else {
                     tmp += '\n' + authors[i];
