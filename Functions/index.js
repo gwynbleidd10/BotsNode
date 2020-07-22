@@ -34,9 +34,13 @@ async function esed(data) {
         tmp = [];
         for (let i = 0; i < authors.length; i++) {
             user = await MDB.FindOne(process.env.MDB_ESED_DB, 'users', { name: authors[i] });
-            if (data.from != user.tg) {
+            if (user != null) {
                 tmp.push(authors[i] + ": " + await check(data, user, str));
             }
+            else {
+
+            }
+
         }
         status.send = tmp;
         MDB.InsertOne(process.env.MDB_ESED_DB, 'status', status);
@@ -51,9 +55,7 @@ async function esed(data) {
                 user = await MDB.FindOne(process.env.MDB_ESED_DB, 'users', { name: authors[i] });
                 if (user != null) {
                     tmp += '\n' + ((user.tg != '') ? `<a href="tg://user?id=${user.tg}">${authors[i]}</a>` : authors[i]);
-                    if (data.from != user.tg) {
-                        list.push(user.tg);
-                    }
+                    list.push(user.tg);
                 }
                 else {
                     tmp += '\n' + authors[i];
@@ -120,6 +122,9 @@ async function check(data, info, str) {
     if (info != null) {
         if (info.tg == '') {
             return 'У пользователя не задан Telegram ID';
+        }
+        if (data.from == info.tg) {
+            return 'Отправка самому себе';
         }
         if (data.type == 'answer') {
             if (info.super) {
