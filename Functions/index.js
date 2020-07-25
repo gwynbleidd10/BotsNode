@@ -12,6 +12,7 @@ async function esed(data) {
     let status = {
         send: '',
         mode: process.env.MODE,
+        type: '',
         from: '',
         date: (new Date(Date.now() - (-32400000))),
         data: data
@@ -25,6 +26,7 @@ async function esed(data) {
     console.log(tmp, data.type, data.title);
     status.from = tmp;
     str += tmp + "</a> ";
+    status.type = (data.type == 'visa') ? 'Виза' : (data.type == 'sign') ? 'Подпись' : (data.type == 'visa-send') ? 'Отправка на визу' : (data.type == 'sign-send') ? 'Отправка на подпись' : (data.type == 'resolution') ? 'Поручение' : (data.type == 'answer') ? 'Отчёт' : ''
     //Проверка типа сообщения
     if (data.type == 'visa' || data.type == 'sign') {
         //{title, url, author, type, status, [comment], from}
