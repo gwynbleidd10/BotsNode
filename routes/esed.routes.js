@@ -15,7 +15,6 @@ router.post('/', function (req, res) {
 });
 
 router.get('/status', async (req, res) => {
-    console.log("Get")
     try {
         const result = await Status.find({ mode: 'prod' }).sort({ date: 'desc' })
         const answer = await Status.count({ mode: 'prod', type: 'Отчёт' })
