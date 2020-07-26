@@ -1,19 +1,23 @@
 const { Router } = require('express')
+const router = Router()
+
+const { esed } = require('../Functions')
+
 const Status = require('../models/Status')
 
-const router = Router()
+router.get('/version', async (req, res) => {
+    res.json({ version: process.env.SCRIPT_VERSION });
+})
+
+router.post('/', function (req, res) {
+    res.status(200).json({ 'status': 'OK' });
+    esed(req.body);
+});
 
 router.get('/status', async (req, res) => {
     console.log("Get")
     try {
         const result = await Status.find({ mode: 'prod' }).sort({ date: 'desc' })
-        // res.forEach((item, i) => {
-        //     console.log(item)
-        // })
-        //console.log(result)
-
-
-
         res.json({
             columns: [
                 {

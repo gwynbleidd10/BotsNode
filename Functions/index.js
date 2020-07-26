@@ -119,7 +119,7 @@ async function esed(data) {
 }
 
 async function check(data, info, str) {
-    (process.env.MODE == "debug") ? console.log("check") : '';
+    (!process.env.NODE_ENV) ? console.log("check") : '';
     let reg = new RegExp(/.*ознакомлен.*/i);
     if (info != null) {
         if (info.tg == '') {
@@ -130,11 +130,11 @@ async function check(data, info, str) {
         }
         if (data.type == 'answer') {
             if (info.super) {
-                return await TG.sendMessage((process.env.MODE == 'debug') ? "debug" : info.tg, (data.text != undefined) ? str += data.text : str += 'Введен пустой отчет!');
+                return await TG.sendMessage((!process.env.NODE_ENV) ? "debug" : info.tg, (data.text != undefined) ? str += data.text : str += 'Введен пустой отчет!');
             }
             else {
                 if (data.text != undefined && !reg.test(data.text.substring(0, 10).toLowerCase())) {
-                    return await TG.sendMessage((process.env.MODE == 'debug') ? "debug" : info.tg, str += data.text);
+                    return await TG.sendMessage((!process.env.NODE_ENV) ? "debug" : info.tg, str += data.text);
                 }
                 else {
                     return "Ознакомление";
@@ -142,7 +142,7 @@ async function check(data, info, str) {
             }
         }
         else {
-            return await TG.sendMessage((process.env.MODE == 'debug') ? "debug" : info.tg, str);
+            return await TG.sendMessage((!process.env.NODE_ENV) ? "debug" : info.tg, str);
         }
     }
     else {

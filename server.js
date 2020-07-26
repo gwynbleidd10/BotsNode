@@ -5,9 +5,9 @@
 */
 
 require('dotenv').config()    //.env
-const MDB = require('./MongoDB')    //Mongo DB module
+//const MDB = require('./MongoDB')    //Mongo DB module
 const TG = require('./Telegram')    //Telegram module
-const FC = require('./Functions')    //Functions module
+const mongoose = require('mongoose')
 
 /*
 ------------------------------------------------------------------------------------------------------
@@ -17,35 +17,37 @@ const FC = require('./Functions')    //Functions module
 
 const express = require('express')
 const server = express()
-const cors = require('cors')
 
-server.use(cors());
-server.use(express.json());
-server.use(express.urlencoded({ extended: true }));
+server.use(express.json())
+server.use(express.urlencoded({ extended: true }))
 
-server.listen(process.env.PORT, function () {
-    console.log(`Express port: ${process.env.PORT}\nMode: ${process.env.MODE}\n`);
-});
+server.use('/api/esed', require('./routes/esed.routes'))
+
+
+
+async function init() {
+    try {
+        await mongoose.connect("mongodb+srv://" + process.env.MDB_USER + ":" + process.env.MDB_PASS + "@" + process.env.MDB_CLUSTER + "/" + process.env.MDB_ESED_DB, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useCreateIndex: true
+        })
+        server.listen(process.env.PORT, () => console.log(`Express port: ${process.env.PORT}\nMode: ${(process.env.NODE_ENV) ? 'prod' : 'debug'}`))
+    } catch (e) {
+        console.error('Init error:', e.message)
+    }
+}
+
+init()
 
 /*
 *   API
 */
 
 server.get('/', function (req, res) {
-    res.send('Точка интеграции ботов.');
-});
+    res.send('Точка интеграции ботов.')
+})
 
 server.get('/ping', function (req, res) {
-    res.status(200).json({ status: "OK" });
-});
-
-//  ESED
-
-server.get('/api/esed/version', function (req, res) {
-    res.json({ version: process.env.SCRIPT_VERSION });
-});
-
-server.post('/api/esed', function (req, res) {
-    res.status(200).json({ 'status': 'OK' });
-    FC.esed(req.body);
-});
+    res.status(200).json({ status: "OK" })
+})
