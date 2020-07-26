@@ -18,10 +18,13 @@ const mongoose = require('mongoose')
 const express = require('express')
 const server = express()
 
+server.use(require('cors')({ origin: '*' }))
 server.use(express.json())
 server.use(express.urlencoded({ extended: true }))
 
 server.use('/api/esed', require('./routes/esed.routes'))
+
+
 
 
 
