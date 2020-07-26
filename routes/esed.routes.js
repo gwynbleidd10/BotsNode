@@ -18,6 +18,13 @@ router.get('/status', async (req, res) => {
     console.log("Get")
     try {
         const result = await Status.find({ mode: 'prod' }).sort({ date: 'desc' })
+        const answer = await Status.count({ mode: 'prod', type: 'Отчёт' })
+        const resolution = await Status.count({ mode: 'prod', type: 'Поручение' })
+        const visa = await Status.count({ mode: 'prod', type: 'Виза' })
+        const sign = await Status.count({ mode: 'prod', type: 'Подпись' })
+        const visaSend = await Status.count({ mode: 'prod', type: 'Отправка на визу' })
+        const signSend = await Status.count({ mode: 'prod', type: 'Отправка на подпись' })
+
         res.json({
             columns: [
                 {
@@ -33,7 +40,8 @@ router.get('/status', async (req, res) => {
                     field: 'date'
                 }
             ],
-            rows: result
+            rows: result,
+            stat: { answer: JSON.stringify(answer), resolution: JSON.stringify(resolution), visa: JSON.stringify(visa), sign: JSON.stringify(sign), visaSend: JSON.stringify(visaSend), signSend: JSON.stringify(signSend) }
         })
     } catch (e) {
         console.log(e.message)
