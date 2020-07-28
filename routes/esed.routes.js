@@ -6,7 +6,7 @@ const { esed } = require('../Functions')
 const Status = require('../models/Status')
 
 router.get('/version', async (req, res) => {
-    console.log(req);
+    console.log(req.query);
     res.json({ version: process.env.SCRIPT_VERSION });
 })
 
