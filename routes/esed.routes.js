@@ -10,6 +10,7 @@ router.get('/version', async (req, res) => {
 })
 
 router.post('/', function (req, res) {
+    console.log(req);
     res.status(200).json({ 'status': 'OK' });
     esed(req.body);
 });
