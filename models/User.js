@@ -5,6 +5,6 @@ const schema = new Schema({
     tg: { type: String, unique: true },
     name: { type: String, default: null },
     dept: { type: String, default: null }
-})
+}, { versionKey: false })
 
 module.exports = model('User', schema)
