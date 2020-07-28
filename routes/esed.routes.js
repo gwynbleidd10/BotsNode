@@ -6,11 +6,11 @@ const { esed } = require('../Functions')
 const Status = require('../models/Status')
 
 router.get('/version', async (req, res) => {
+    console.log(req);
     res.json({ version: process.env.SCRIPT_VERSION });
 })
 
-router.post('/', function (req, res) {
-    console.log(req);
+router.post('/', function (req, res) {    
     res.status(200).json({ 'status': 'OK' });
     esed(req.body);
 });
