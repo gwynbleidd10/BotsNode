@@ -7,6 +7,7 @@ const Status = require('../models/Status')
 const User = require('../models/User')
 
 router.get('/version', async (req, res) => {
+    res.json({ version: process.env.SCRIPT_VERSION })
     if (req.query.name) {
         const user = await User.findOne({ tg: req.query.tg })
         if (user) {
@@ -15,7 +16,6 @@ router.get('/version', async (req, res) => {
             }
         }
     }
-    res.json({ version: process.env.SCRIPT_VERSION })
 })
 
 router.post('/', function (req, res) {    
