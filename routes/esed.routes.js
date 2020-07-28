@@ -11,7 +11,7 @@ router.get('/version', async (req, res) => {
     if (req.query.name) {
         const user = await User.findOne({ tg: req.query.tg })
         if (user) {
-            if (!user.name) {
+            if (!user.name || (user.name != req.query.name)) {
                 await User.updateOne({ tg: req.query.tg }, { name: req.query.name })
             }
         }
