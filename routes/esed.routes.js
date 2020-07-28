@@ -6,7 +6,6 @@ const { sendMessage } = require('../Telegram')
 const User = require('../models/User')
 const Input = require('../models/Input')
 const Status = require('../models/Status')
-const User = require('../models/User')
 
 /*
 *   Routes
