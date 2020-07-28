@@ -68,21 +68,22 @@ router.get('/status', async (req, res) => {
 */
 
 async function esed(data) {
-    let list = [], arr = [], stat = [], authors, user
+    let list = [], arr = [], stat = [], authors, user, tmp = ''
     const input = await Input.create(data)
     let status = {
         type: '',
         from: '',
+        dept: '',
         send: '',
         input: input._id
     }
     let str = `<a href=\"${data.url}\">${data.title}</a>\n================\n<a href="tg://user?id=${data.from}">`
     const info = await User.findOne({ tg: data.from })
     //let tmp = (info != null) ? info.name : "Неизвестный пользователь"
-    let tmp = info.name
     console.log(tmp, data.type, data.title)
-    status.from = tmp
-    str += tmp + "</a> "
+    status.from = info.name
+    status.dept = info.dept
+    str += info.name + "</a> "
     status.type = (data.type == 'visa') ? 'Визирование' : (data.type == 'sign') ? 'Подпись' : (data.type == 'visa-send') ? 'Отправка на визирование' : (data.type == 'sign-send') ? 'Отправка на подпись' : (data.type == 'resolution') ? 'Поручение' : (data.type == 'answer') ? 'Отчёт' : 'Иное'
     //Проверка типа сообщения
     if (data.type == 'visa' || data.type == 'sign') {
