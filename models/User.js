@@ -7,4 +7,4 @@ const schema = new Schema({
     dept: { type: String, default: null }
 }, { versionKey: false })
 
-module.exports = model('users', schema)
+module.exports = model('User', schema)
