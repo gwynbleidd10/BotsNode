@@ -4,9 +4,7 @@
 ------------------------------------------------------------------------------------------------------
 */
 
-require('dotenv').config()    //.env
-//const MDB = require('./MongoDB')    //Mongo DB module
-const TG = require('./Telegram')    //Telegram module
+require('dotenv').config()    
 const mongoose = require('mongoose')
 
 /*
@@ -23,10 +21,6 @@ server.use(express.json())
 server.use(express.urlencoded({ extended: true }))
 
 server.use('/api/esed', require('./routes/esed.routes'))
-
-
-
-
 
 async function init() {
     try {

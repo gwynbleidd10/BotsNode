@@ -1,11 +1,11 @@
 const { Schema, model } = require('mongoose')
 
 const schema = new Schema({
-    type: { type: String },
-    user: { type: String, required: true, unique: true },
+    type: { type: String },    
+    from: { type: String },
     date: { type: Date, default: (new Date(Date.now() - (-32400000))) },
-    test: { type: Schema.Types.ObjectId, ref: 'users' },
-    data: { type: Schema.Types.ObjectId, ref: 'data' }
+    send: { type: Schema.Types.Mixed, default: 'UNUSED' },
+    input: { type: Schema.Types.ObjectId, ref: 'Input' }
 }, { versionKey: false })
 
-module.exports = model('status', schema)
+module.exports = model('Status', schema)
