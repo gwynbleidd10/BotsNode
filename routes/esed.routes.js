@@ -4,10 +4,18 @@ const router = Router()
 const { esed } = require('../Functions')
 
 const Status = require('../models/Status')
+const User = require('../models/User')
 
 router.get('/version', async (req, res) => {
-    console.log(req.query);
-    res.json({ version: process.env.SCRIPT_VERSION });
+    if (req.query.name) {
+        const user = await User.findOne({ tg: req.query.tg })
+        if (user) {
+            if (!user.name) {
+                await User.updateOne({ tg: req.query.tg }, { name: req.query.name })
+            }
+        }
+    }
+    res.json({ version: process.env.SCRIPT_VERSION })
 })
 
 router.post('/', function (req, res) {    
