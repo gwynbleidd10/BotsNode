@@ -8,4 +8,4 @@ const schema = new Schema({
     input: { type: Schema.Types.ObjectId, ref: 'Input' }
 }, { versionKey: false })
 
-module.exports = model('Status', schema)
+module.exports = model('Statistic', schema)
