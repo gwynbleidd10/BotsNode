@@ -18,7 +18,6 @@ router.post('/', async (req, res) => {
 })
 
 router.get('/version', async (req, res) => {
-    console.log(req.query)
     res.json({ version: process.env.SCRIPT_VERSION })
     if (req.query.name) {
         const user = await User.findOne({ tg: req.query.tg })
