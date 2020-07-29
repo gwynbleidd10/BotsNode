@@ -81,7 +81,7 @@ async function esed(data) {
     let str = `<a href=\"${data.url}\">${data.title}</a>\n================\n<a href="tg://user?id=${data.from}">`
     const info = await User.findOne({ tg: data.from })
     //let tmp = (info != null) ? info.name : "Неизвестный пользователь"
-    console.log(tmp, data.type, data.title)
+    console.log(info.name, data.type, data.title)
     status.from = info.name
     status.dept = info.dept
     str += info.name + "</a> "

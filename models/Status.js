@@ -1,10 +1,11 @@
 const { Schema, model } = require('mongoose')
 
 const schema = new Schema({
-    type: { type: String },    
+    type: { type: String },
     from: { type: String },
+    dept: { type: String },
+    send: { type: Schema.Types.Mixed },
     date: { type: Date, default: (new Date(Date.now() - (-32400000))) },
-    send: { type: Schema.Types.Mixed, default: 'UNUSED' },
     input: { type: Schema.Types.ObjectId, ref: 'Input' }
 }, { versionKey: false })
 
