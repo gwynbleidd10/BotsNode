@@ -14,7 +14,7 @@ bot.on('polling_error', (error) => {
     console.error(error.response.body)
 });
 
-bot.onText(/\/info/, async (msg) => {    
+bot.onText(/\/info/, async (msg) => {
     let str = '<b>Ваш Telegram ID</b> = <i>' + msg.from.id + '</i>\n\n'
     str += 'Для установки скрипта требуется:\n'
     str += '1)Установить расширение для своего браузера по <a href="https://www.tampermonkey.net">ссылке</a>\n'
@@ -32,9 +32,9 @@ async function checkId(chatId) {
 }
 
 async function sendMessage(chatId, message) {
-    chatId = (chatId == "debug") ? process.env.BOT_DEBUG : chatId;
+    chatId = (chatId == "debug") ? process.env.BOT_DEBUG : chatId
     const res = await bot.sendMessage(chatId, message, { disable_web_page_preview: true, parse_mode: "HTML" }).catch((error) => {
-        bot.sendMessage(process.env.BOT_DEBUG, "Error code:\n" + error.code + "\nError body:\n" + JSON.stringify(error.response.body) + "\nMessage:\n" + message, { disable_web_page_preview: true, parse_mode: "HTML" });
-    });
-    return (await res != undefined) ? 'Сообщение успешно отправлено' : 'Возникла ошибка при отправке сообщения';
+        bot.sendMessage(process.env.BOT_DEBUG, "Error code:\n" + error.code + "\nError body:\n" + JSON.stringify(error.response.body) + "\nMessage:\n" + message, { disable_web_page_preview: true, parse_mode: "HTML" })
+    })
+    return (await res != undefined) ? { status: true, message: 'Сообщение успешно отправлено' } : { status: false, message: 'Возникла ошибка при отправке сообщения' }
 }

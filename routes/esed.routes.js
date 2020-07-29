@@ -5,6 +5,7 @@ const { sendMessage } = require('../Telegram')
 
 const User = require('../models/User')
 const Input = require('../models/Input')
+const Send = require('../models/Send')
 const Status = require('../models/Status')
 
 /*
@@ -68,12 +69,13 @@ router.get('/status', async (req, res) => {
 */
 
 async function esed(data) {
-    let list = [], arr = [], stat = [], authors, user, tmp = ''
+    let list = [], arr = [], stat = [], authors, user, send, tmp = ''
     const input = await Input.create(data)
     let status = {
         type: '',
         from: '',
         dept: '',
+        to: 0,
         send: '',
         input: input._id
     }
@@ -95,10 +97,15 @@ async function esed(data) {
         for (let i = 0; i < authors.length; i++) {
             user = await User.findOne({ name: authors[i] })
             if (user != null) {
-                tmp.push(authors[i] + ": " + await check(data, user, str))
+                status.send = await check(data, user, str)
+                if (status.send.status) {
+                    status.to = 1
+                }
+                tmp.push({ user: authors[i], send: status.send })
             }
         }
-        status.send = tmp
+        send = await Send.create({ ...tmp })
+        status.send = send._id
         await Status.create(status)
     }
     else if (data.type == 'visa-send' || data.type == 'sign-send') {
@@ -119,9 +126,14 @@ async function esed(data) {
             }
             for (let i = 0; i < list.length; i++) {
                 user = await User.findOne({ tg: list[i] })
-                arr.push(user.name + ": " + await check(data, user, str + tmp))
+                status.send = await check(data, user, str + tmp)
+                if (status.send.status) {
+                    status.to = 1
+                }
+                arr.push({ user: user.name, send: status.send })
             }
-            status.send = (list.length > 0) ? arr : "Ни одного пользователя нет в справочнике"
+            send = await Send.create((list.length > 0) ? { ...arr } : { message: "Ни одного пользователя нет в справочнике" })
+            status.send = send._id
             await Status.create(status)
         }
     }
@@ -129,6 +141,7 @@ async function esed(data) {
         //{title, url, type, from, list {title, list, [date]}}
         str += 'назначил(а) <i>поручение</i>\n================'
         for (let i = 0; i < data.list.length; i++) {
+            status.res = data.list.length
             if (data.list[i].control == "true") {
                 tmp = ''
                 tmp += '\nПоручение: <i>' + data.list[i].title + '</i>\n================\nСрок: <i>' + data.list[i].date + '</i>\n================'
@@ -146,15 +159,20 @@ async function esed(data) {
                 }
                 for (let i = 0; i < list.length; i++) {
                     user = await User.findOne({ tg: list[i] })
-                    stat.push(user.name + ": " + await check(data, user, str + tmp))
+                    status.send = await check(data, user, str + tmp)
+                    if (status.send.status) {
+                        status.to += 1
+                    }
+                    stat.push({ user: user.name, send: status.send })
                 }
-                arr.push(status.send = (list.length > 0) ? stat : "Ни одного пользователя нет в справочнике")
+                arr.push((list.length > 0) ? stat : { message: "Ни одного пользователя нет в справочнике" })
             }
             else {
-                arr.push(["Неконтрольное поручение"])
+                arr.push({ message: "Неконтрольное поручение" })
             }
         }
-        status.send = arr
+        send = await Send.create({ ...arr })
+        status.send = send._id
         await Status.create(status)
     }
     else {
@@ -163,6 +181,11 @@ async function esed(data) {
             str += `<i>ввел(а) отчет:</i>\n================\nСтатус: <i>${data.status}</i>\n================\n`
             user = await User.findOne({ name: data.author })
             status.send = await check(data, user, str)
+            if (status.send.status) {
+                status.to = 1
+            }
+            send = await Send.create(status.send)
+            status.send = send._id
             await Status.create(status)
         }
     }
@@ -172,10 +195,10 @@ async function check(data, info, str) {
     let reg = new RegExp(/.*ознакомлен.*/i)
     if (info != null) {
         if (info.tg == '') {
-            return 'У пользователя не задан Telegram ID'
+            return { status: false, message: 'У пользователя не задан Telegram ID' }
         }
         if (data.from == info.tg) {
-            return 'Отправка самому себе'
+            return { status: false, message: 'Отправка самому себе' }
         }
         if (data.type == 'answer') {
             if (info.super) {
@@ -186,7 +209,7 @@ async function check(data, info, str) {
                     return await sendMessage((!process.env.NODE_ENV) ? "debug" : info.tg, str += data.text)
                 }
                 else {
-                    return "Ознакомление"
+                    return { status: false, message: 'Ознакомление' }
                 }
             }
         }
@@ -195,7 +218,7 @@ async function check(data, info, str) {
         }
     }
     else {
-        return "Пользователя нет в справочнике"
+        return { status: false, message: 'Пользователя нет в справочнике' }
     }
 }
 
