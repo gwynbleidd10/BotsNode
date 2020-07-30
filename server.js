@@ -4,7 +4,7 @@
 ------------------------------------------------------------------------------------------------------
 */
 
-require('dotenv').config()    
+require('dotenv').config()
 const mongoose = require('mongoose')
 
 /*
@@ -14,9 +14,11 @@ const mongoose = require('mongoose')
 */
 
 const express = require('express')
+const fileupload = require('express-fileupload')
 const server = express()
 
 server.use(require('cors')({ origin: '*' }))
+server.use(fileupload())
 server.use(express.json())
 server.use(express.urlencoded({ extended: true }))
 
@@ -46,5 +48,7 @@ server.get('/', function (req, res) {
 })
 
 server.get('/ping', function (req, res) {
+    console.log('ping')
+    console.log(req.files)
     res.status(200).json({ status: "OK" })
 })

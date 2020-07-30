@@ -14,15 +14,24 @@ bot.on('polling_error', (error) => {
     console.error(error.response.body)
 });
 
+bot.onText(/\/start/, (msg) => {
+    sendMessage(msg.from.id, start(msg.from.id))
+    checkId(msg.from.id)
+})
+
 bot.onText(/\/info/, async (msg) => {
-    let str = '<b>Ваш Telegram ID</b> = <i>' + msg.from.id + '</i>\n\n'
+    sendMessage(msg.from.id, start(msg.from.id))
+    checkId(msg.from.id)
+});
+
+function start(id) {
+    let str = '<b>Ваш Telegram ID</b> = <i>' + id + '</i>\n\n'
     str += 'Для установки скрипта требуется:\n'
     str += '1)Установить расширение для своего браузера по <a href="https://www.tampermonkey.net">ссылке</a>\n'
     str += '2)Перейти по <a href="https://github.com/gwynbleidd10/userscripts/raw/master/ESEDtoTG.user.js">ссылке</a> и установить скрипт\n'
     str += '3)Включить расширение и включить скрипт! При следующем заходе на сайт ESED\'а скрипт попросит ввести полученый ранее Telegram ID от бота.'
-    sendMessage(msg.from.id, str)
-    checkId(msg.from.id)
-});
+    return str
+}
 
 async function checkId(chatId) {
     const user = await User.findOne({ tg: chatId })
