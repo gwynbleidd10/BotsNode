@@ -47,8 +47,10 @@ server.get('/', function (req, res) {
     res.send('Точка интеграции ботов.')
 })
 
-server.get('/ping', function (req, res) {
-    console.log('ping')
-    console.log(req.files)
+server.get('/ping', function (req, res) {    
     res.status(200).json({ status: "OK" })
+})
+
+server.post('/test', async (req, res) => {
+    console.log(req.files)
 })
