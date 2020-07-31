@@ -65,7 +65,15 @@ async function checkId(chatId) {
         await User.create({ tg: chatId })
     }
     if (user.dept) {
-        bot.sendMessage(chatId, 'Введите номер своего отдела командой "/setdept НОМЕР_ОТДЕЛА".\n(Для выбора УЦТ необходимо ввести команду "/setdept 2")\n\nНомера отделов:\n1 - Руководство\n2 - УЦТ\n3 - ОРиСИС', { disable_web_page_preview: true, parse_mode: "HTML" })
+        let str = ''
+        str += 'Проверьте, правильно ли у вас установлен отдел. Для этого введите команду "/dept". '
+        str += 'Если отдел неверный, то введите номер своего отдела командой "/setdept НОМЕР_ОТДЕЛА".\n'
+        str += '(Для выбора УЦТ необходимо ввести команду "/setdept 2")\n\n'
+        str += 'Номера отделов:\n'
+        str += '1 - Руководство\n'
+        str += '2 - УЦТ\n'
+        str += '3 - ОРиСИС\n'
+        bot.sendMessage(chatId, str, { disable_web_page_preview: true, parse_mode: "HTML" })
     }
 }
 
