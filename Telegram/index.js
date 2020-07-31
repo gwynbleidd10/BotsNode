@@ -22,14 +22,40 @@ bot.onText(/\/start/, (msg) => {
 bot.onText(/\/info/, async (msg) => {
     sendMessage(msg.from.id, start(msg.from.id))
     checkId(msg.from.id)
-});
+})
+
+bot.onText(/\/dept/, async (msg) => {
+    let user = await User.findOne({ tg: msg.from.id })
+    bot.sendMessage(msg.from.id, 'Ваш текущий отдел: <i>' + user.dept + '</i>', { disable_web_page_preview: true, parse_mode: "HTML" })
+})
+
+bot.onText(/\/setdept ([0-9]+)/, async (msg, match) => {
+    let str = 'Нет такого номера отдела!'
+    bot.sendMessage(msg.from.id, 'Проверяю...')
+    switch (match[1]) {
+        case ('1'):
+            res = await User.updateOne({ tg: msg.from.id }, { dept: 'Руководство' })
+            str = 'Отдел успешно установлен в: <i>Руководство</i>'
+            break
+        case ('2'):
+            res = await User.updateOne({ tg: msg.from.id }, { dept: 'УЦТ' })
+            str = 'Отдел успешно установлен в: <i>УЦТ</i>'
+            break
+        case ('3'):
+            res = await User.updateOne({ tg: msg.from.id }, { dept: 'ОРиСИС' })
+            str = 'Отдел успешно установлен в: <i>ОРиСИС</i>'
+            break
+    }
+    bot.sendMessage(msg.from.id, str, { disable_web_page_preview: true, parse_mode: "HTML" })
+})
 
 function start(id) {
     let str = '<b>Ваш Telegram ID</b> = <i>' + id + '</i>\n\n'
     str += 'Для установки скрипта требуется:\n'
-    str += '1)Установить расширение для своего браузера по <a href="https://www.tampermonkey.net">ссылке</a>\n'
-    str += '2)Перейти по <a href="https://github.com/gwynbleidd10/userscripts/raw/master/ESEDtoTG.user.js">ссылке</a> и установить скрипт\n'
-    str += '3)Включить расширение и включить скрипт! При следующем заходе на сайт ESED\'а скрипт попросит ввести полученый ранее Telegram ID от бота.'
+    str += '1)Отправить боту номер своего отедала (подробное описание в следующем сообщении)\n'
+    str += '2)Установить расширение для своего браузера по <a href="https://www.tampermonkey.net">ссылке</a>\n'
+    str += '3)Перейти по <a href="https://github.com/gwynbleidd10/userscripts/raw/master/ESEDtoTG.user.js">ссылке</a> и установить скрипт\n'
+    str += '4)Включить расширение и включить скрипт! При следующем заходе на сайт ESED\'а скрипт попросит ввести полученый ранее Telegram ID от бота.'
     return str
 }
 
@@ -38,7 +64,14 @@ async function checkId(chatId) {
     if (!user) {
         await User.create({ tg: chatId })
     }
+    if (user.dept) {
+        bot.sendMessage(chatId, 'Введите номер своего отдела командой "/setdept НОМЕР_ОТДЕЛА".\n(Для выбора УЦТ необходимо ввести команду "/setdept 2")\n\nНомера отделов:\n1 - Руководство\n2 - УЦТ\n3 - ОРиСИС', { disable_web_page_preview: true, parse_mode: "HTML" })
+    }
 }
+
+// bot.on('message', async (msg) => {
+//     checkId(msg.from.id)
+// })
 
 async function sendMessage(chatId, message) {
     chatId = (chatId == "debug") ? process.env.BOT_DEBUG : chatId
