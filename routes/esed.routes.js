@@ -139,10 +139,12 @@ async function esed(data) {
     }
     else if (data.type == 'resolution') {
         //{title, url, type, from, list {title, list, [date]}}
+        let ctrl = 0
         str += 'назначил(а) <i>поручение</i>\n================'
-        for (let i = 0; i < data.list.length; i++) {
+        for (let i = 0; i < data.list.length; i++) {            
             status.res = data.list.length
             if (data.list[i].control == "true") {
+                ctrl++
                 tmp = ''
                 tmp += '\nПоручение: <i>' + data.list[i].title + '</i>\n================\nСрок: <i>' + data.list[i].date + '</i>\n================'
                 authors = data.list[i].list.split(',')
@@ -171,6 +173,8 @@ async function esed(data) {
                 arr.push({ message: "Неконтрольное поручение" })
             }
         }
+        status.ctrl = ctrl
+        status.nctrl = status.res - status.ctrl
         send = await Send.create({ ...arr })
         status.send = send._id
         await Status.create(status)
