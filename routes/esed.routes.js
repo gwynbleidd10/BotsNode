@@ -174,7 +174,6 @@ async function esed(data) {
             }
         }
         status.ctrl = ctrl
-        status.nctrl = status.res - status.ctrl
         send = await Send.create({ ...arr })
         status.send = send._id
         await Status.create(status)

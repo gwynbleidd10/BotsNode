@@ -7,7 +7,6 @@ const schema = new Schema({
     to: { type: Number, default: 0 },
     res: { type: Number, default: 0 },
     ctrl: { type: Number, default: 0 },
-    nctrl: { type: Number, default: 0 },
     send: { type: Schema.Types.Mixed },
     date: { type: Date, default: (new Date(Date.now() - (-32400000))) },
     input: { type: Schema.Types.ObjectId, ref: 'Input' }
