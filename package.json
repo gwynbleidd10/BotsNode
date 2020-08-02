@@ -28,6 +28,7 @@
     "express-fileupload": "^1.1.8",
     "mongodb": "^3.5.9",
     "mongoose": "^5.9.25",
+    "newrelic": "^6.11.0",
     "node-telegram-bot-api": "^0.50.0",
     "redis": "^3.0.2"
   },

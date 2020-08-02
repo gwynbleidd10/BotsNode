@@ -5,6 +5,7 @@
 */
 
 require('dotenv').config()
+require('newrelic')
 const mongoose = require('mongoose')
 
 /*
