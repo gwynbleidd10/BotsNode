@@ -64,7 +64,7 @@ async function checkId(chatId) {
     if (!user) {
         await User.create({ tg: chatId })
     }
-    if (user.dept) {
+    if (!user.dept) {
         let str = ''
         str += 'Проверьте, правильно ли у вас установлен отдел. Для этого введите команду "/dept". '
         str += 'Если отдел неверный, то введите номер своего отдела командой "/setdept НОМЕР_ОТДЕЛА".\n'
