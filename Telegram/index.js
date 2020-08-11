@@ -60,9 +60,10 @@ function start(id) {
 }
 
 async function checkId(chatId) {
-    const user = await User.findOne({ tg: chatId })
+    let user = await User.findOne({ tg: chatId })
     if (!user) {
         await User.create({ tg: chatId })
+        user = await User.findOne({ tg: chatId })
     }
     if (!user.dept) {
         let str = ''
