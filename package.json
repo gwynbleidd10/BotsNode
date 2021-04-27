@@ -30,7 +30,7 @@
     "mongoose": "^5.9.25",
     "newrelic": "^6.11.0",
     "node-telegram-bot-api": "^0.50.0",
-    "redis": "^3.0.2"
+    "redis": "^3.1.1"
   },
   "engines": {
     "node": ">=14.0.0"
